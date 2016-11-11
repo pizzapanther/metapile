@@ -1,4 +1,5 @@
 import io
+import traceback
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -23,13 +24,14 @@ class Command (BaseCommand):
       bucket = s3.Bucket(bname)
       for key in bucket.objects.all():
         photo, created = Photo.objects.get_or_create(path=key.key, bucket=bname)
-        if created:
+        if created or photo.metadata is None:
           print(key.key)
           try:
             file_obj = io.BytesIO(key.get()['Body'].read())
             
           except botocore.exceptions.ClientError:
             print('!!! File Read Error !!!')
+            traceback.print_exc()
             continue
             
           tags = exifread.process_file(file_obj, details=False)
