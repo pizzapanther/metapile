@@ -39,7 +39,9 @@
                     </span>
                   </div>
                 </div>
-                <img ng-src="https://waldor.imgix.net/{{ photo.path }}?w=120&crop=faces&h=120&fit=crop" alt="">
+                <a href="http://s3.amazonaws.com/waldo-recruiting/{{ photo.path }}" target="_blank">
+                  <img ng-src="https://waldor.imgix.net/{{ photo.path }}?w=120&crop=faces&h=120&fit=crop" alt="">
+                </a>
               </div>
             </div>
           </md-list-item>
