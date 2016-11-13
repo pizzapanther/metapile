@@ -4,6 +4,14 @@
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
     <title>Data Explorer</title>
     <style>
+      md-list-item {
+        margin: 20px 0;
+      }
+      
+      md-list-item img {
+        padding-left: 15px;
+      }
+      
       md-dialog-content > div {
         padding: 10px;
       }
@@ -17,16 +25,21 @@
         <md-list flex>
           <md-list-item ng-repeat="photo in photos">
             <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-              <h4>{{ photo.path }}</h4>
-              <div layout="row" layout-align="start center">
-                <span flex>
-                  <strong>Bucket:</strong> {{ photo.bucket }}
-                </span>
-                <span>
-                  <md-button class="md-primary md-raised" ng-click="view_exif(photo.id)">
-                    View Exif Tags
-                  </md-button>
-                </span>
+              <div layout="row" layout-align="start start">
+                <div flex>
+                  <h4>{{ photo.path }}</h4>
+                  <div layout="row" layout-align="start center">
+                    <span flex>
+                      <strong>Bucket:</strong> {{ photo.bucket }}
+                    </span>
+                    <span>
+                      <md-button class="md-primary md-raised" ng-click="view_exif(photo.id)">
+                        View Exif Tags
+                      </md-button>
+                    </span>
+                  </div>
+                </div>
+                <img ng-src="https://waldor.imgix.net/{{ photo.path }}?w=120&crop=faces&h=120&fit=crop" alt="">
               </div>
             </div>
           </md-list-item>
