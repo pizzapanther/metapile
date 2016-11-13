@@ -1,0 +1,107 @@
+<html lang="en" >
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <title>Data Explorer</title>
+    <style>
+      md-dialog-content > div {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body ng-app="MetaApp" ng-cloak layout="column" layout-padding>
+    {% verbatim %}
+    <h2>Data Explorer</h2>
+    <div flex ng-controller="MetaController">
+      <md-content>
+        <md-list flex>
+          <md-list-item ng-repeat="photo in photos">
+            <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+              <h4>{{ photo.path }}</h4>
+              <div layout="row" layout-align="start center">
+                <span flex>
+                  <strong>Bucket:</strong> {{ photo.bucket }}
+                </span>
+                <span>
+                  <md-button class="md-primary md-raised" ng-click="view_exif(photo.id)">
+                    View Exif Tags
+                  </md-button>
+                </span>
+              </div>
+            </div>
+          </md-list-item>
+        </md-list>
+      </md-content>
+      {% endverbatim %}
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script type="text/javascript">    
+      function ExifController ($scope, $mdDialog, $http, photo_id) {
+        $scope.photo = {path: 'loading'};
+        
+        var query = {"query": "query {photo(id: \"" + photo_id + "\") {path\nbucket\nmetadata\ncreated}}"};
+        $http.post('/data-graph', query).then(function (response) {
+          $scope.photo = response.data.data.photo;
+          var metadata = JSON.parse($scope.photo.metadata)
+          $scope.photo.metadata = [];
+          for (var key in metadata) {
+            if (metadata[key]) {
+              $scope.photo.metadata.push({name: key, value: metadata[key]});
+            }
+          }
+        });
+        
+        $scope.close = function() {
+          $mdDialog.cancel();
+        };
+      };
+      
+      var app = angular.module('MetaApp', ['ngMaterial']);
+      app.controller('MetaController', function ($scope, $http, $mdDialog) {
+        var query = {"query": "query {photos {edges {node {id\npath\nbucket\n}}}}"};
+        $http.post('/data-graph', query).then(function (response) {
+          $scope.photos = response.data.data.photos.edges;
+          $scope.photos.forEach(function (element, index, array) {
+            array[index] = element.node;
+          });
+        });
+        
+        $scope.view_exif = function (photo_id) {
+          $mdDialog.show({
+            controller: ExifController,
+            templateUrl: 'exif.tmpl.html',
+            clickOutsideToClose: true,
+            locals: {photo_id: photo_id}
+          });
+        };
+      });
+    </script>
+    {% verbatim %}
+    <script type="text/ng-template" id="exif.tmpl.html">
+      <md-dialog aria-label="Exif Data: {{ photo.path }}">
+        <md-toolbar>
+          <div class="md-toolbar-tools">
+            <h2>Exif Data: {{ photo.path }}</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="close()">
+              X
+            </md-button>
+          </div>
+        </md-toolbar>
+        <md-dialog-content>
+          <div>
+            <div ng-repeat="tag in photo.metadata | orderBy: 'name'">
+              <strong>{{ tag.name }}:</strong> 
+              {{ tag.value }}
+            </div>
+          </div>
+        </md-dialog-content>
+      </md-dialog>
+    </script>
+    {% endverbatim %}
+  </body>
+</html>

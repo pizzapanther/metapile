@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.views.decorators.csrf import csrf_exempt
+
+from graphene_django.views import GraphQLView
+
+import metapile.views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+  url(r'^admin/', admin.site.urls),
+  url(r'^data-graph', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+  url(r'^$', metapile.views.data_explorer),
 ]

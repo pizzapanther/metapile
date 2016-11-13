@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'graphene_django',
+    
     'metapile',
 ]
 
@@ -122,3 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static-compiled")
+
+GRAPHENE = {
+  'SCHEMA': 'metapile.schema.schema'
+}

@@ -1,7 +1,9 @@
 boto3==1.4.1
 dj-database-url
+django-filter==0.15.3
 Django==1.10.3
 ExifRead==2.1.2
+graphene-django==1.0
 gunicorn==19.6.0
 psycopg2
 whitenoise==3.2.2
