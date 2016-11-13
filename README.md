@@ -1,9 +1,15 @@
 # Metapile
 
+## Requirements
+
+- Python 3
+- Postgres 9.3
+
 ## Setup
 
 ```
 pip install -r requirements.txt
+createdb metapile
 python manage migrate
 ```
 
