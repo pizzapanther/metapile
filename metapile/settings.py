@@ -27,7 +27,8 @@ SECRET_KEY = 'y9oqw8r@z&nk7o%tqp09fin!@qh27hjt&#twgawts0(ig%dp(7'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-  'savannah.neutrondrive.com'
+  'savannah.neutrondrive.com',
+  'metapile.herokuapp.com',
 ]
 
 
